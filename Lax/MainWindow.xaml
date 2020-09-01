@@ -1,0 +1,140 @@
+﻿<Window x:Class="Lax.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lax.Classes"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        Background="Bisque"
+        WindowStyle="None"
+        WindowState="Maximized">
+    
+    <!--#region DataTemplates for dynamic content-->
+    <Window.Resources>
+        <DataTemplate x:Key="MovieLayout">
+            <StackPanel Orientation="Horizontal" Width="409">
+                <Image Source="{Binding Path=Thumbnail}" MaxHeight="256"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Text="{Binding Path=Title}" FontSize="18" TextWrapping="Wrap" MaxWidth="185"/>
+                        <TextBlock FontSize="14">
+                                    <Run Text="{Binding Path=Rating}"/>
+                                    <Run Text="★"/>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Path=Genre}" FontSize="14"/>
+                        <TextBlock FontSize="14">
+                                    <Run Text="{Binding Path=Runtime}"/>
+                                    <Run Text="min"/>
+                        </TextBlock>
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="1">
+                        <TextBlock FontSize="14">
+                                        <Run Text="{Binding Path=Price}"/>
+                                        <Run Text="$"/>
+                        </TextBlock>
+                        <TextBlock Text="{Binding Path=ReleaseDate}" FontSize="14"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </DataTemplate>
+        
+    </Window.Resources>
+    <!--#endregion-->
+    
+    <!--#region Main-->
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="7*"/>
+        </Grid.RowDefinitions>
+        
+        <!--#region ListBox for displaying all movies in database via DataTemplate-->
+        <ListBox Name="listbox" Grid.ColumnSpan="2" Grid.RowSpan="2"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 IsSynchronizedWithCurrentItem="True"
+                 SelectedItem=""
+                 ItemsSource="{Binding movies}"
+                 ItemTemplate="{StaticResource MovieLayout}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListBox>
+        <!--#endregion-->
+        
+        <!--#region Buttons at top left-->
+        <Grid Grid.Column="2" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Width="auto" Background="Red" FontSize="70" Click="Delete_Click" DataContext="{Binding DataContext, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBox}}">🗑</Button>
+            <Button Grid.Column="1" Width="auto" Background="Orange" FontSize="70" Click="Create_Click">✎</Button>
+            <Button Grid.Column="2" Width="auto" Background="Green" FontSize="70" Click="Save_Click">💾</Button>
+            <Button Grid.Column="3" Width="auto" Background="Red" FontSize="70" Click="Exit_Click">❌</Button>
+        </Grid>
+        <!--#endregion-->
+        
+        <!--#region Textblocks and boxes at left middle-->
+        <Grid Grid.Column="2" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!--#region StackPanel containing textBlocks-->
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="1" Background="White">
+                <TextBlock Text="Thumbnail" FontSize="20" Height="40"/>
+                <TextBlock Text="Title" FontSize="20"/>
+                <TextBlock Text="Rating" FontSize="20" Height="40"/>
+                <TextBlock Text="Genre" FontSize="20" Height="40"/>
+                <TextBlock Text="Runtime" FontSize="20" Height="40"/>
+                <TextBlock Text="Price" FontSize="20" Height="40"/>
+                <TextBlock Text="Release Date" FontSize="20" Height="40"/>
+            </StackPanel>
+            <!--#endregion-->
+            
+            <!--#region StackPanel containing TextBoxes-->
+            <StackPanel Grid.Column="1" Grid.ColumnSpan="3" Grid.Row="0" Background="White">
+                <TextBox Name="Thumbnail" Text="{Binding ElementName=listbox,Path=SelectedItem.Thumbnail, Mode=OneWay}" FontSize="20" Height="40"/>
+                <TextBox Name="title" Text="{Binding ElementName=listbox,Path=SelectedItem.Title, Mode=OneWay}" FontSize="20"/>
+                <TextBox Name="Rating" Text="{Binding ElementName=listbox,Path=SelectedItem.Rating, Mode=OneWay}" FontSize="20" Height="40"/>
+                <TextBox Name="Genre" Text="{Binding ElementName=listbox,Path=SelectedItem.Genre, Mode=OneWay}" FontSize="20" Height="40"/>
+                <TextBox Name="RunTime" Text="{Binding ElementName=listbox,Path=SelectedItem.Runtime, Mode=OneWay}" FontSize="20" Height="40"/>
+                <TextBox Name="Price" Text="{Binding ElementName=listbox,Path=SelectedItem.Price, Mode=OneWay}" FontSize="20" Height="40"/>
+                <DatePicker Name="ReleaseDate" Text="{Binding ElementName=listbox,Path=SelectedItem.ReleaseDate, Mode=OneWay}" FontSize="20" Height="40"/>
+            </StackPanel>
+            <!--#endregion-->
+            
+        </Grid>
+        <!--#endregion-->
+        
+    </Grid>
+    <!--#endregion-->
+    
+</Window>
